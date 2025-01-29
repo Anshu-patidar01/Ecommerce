@@ -43,7 +43,6 @@ const userLogin = async (req, res) => {
       throw new Error("enter valid email.");
     }
     const user = await UserModel.findOne({ "basicInfo.email": email });
-    console.log(user);
     if (!user) {
       throw new Error("Email or password is wrong..");
     }
@@ -53,7 +52,11 @@ const userLogin = async (req, res) => {
       throw new Error("Email or password is wrong.");
     }
     const token = await user.generateAuthToken();
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      SameSite: "None",
+      secure: true,
+    });
     res.json({ message: "login successfull" });
   } catch (error) {
     res.status(400).json({ message: "Problem while login", Error: `${error}` });

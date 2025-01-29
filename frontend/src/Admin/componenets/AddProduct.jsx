@@ -53,7 +53,7 @@ function AddProduct() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/admin/addProduct",
+        process.env.VITE_API_ADD_PRODUCT_API,
         formData,
         { headers: { "Content-Type": "application/json" } }
       );

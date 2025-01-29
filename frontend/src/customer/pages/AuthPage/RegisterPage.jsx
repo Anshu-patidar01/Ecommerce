@@ -1,8 +1,88 @@
-import React from "react";
-import { Link } from "react-router-dom";
-
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 function RegisterPage() {
-  const [formData, setformData] = useState({ name });
+  const [form, setform] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const navigate = useNavigate();
+
+  const [showMessage, setShowMessage] = useState(false);
+  const [PopUpmessage, setPopUpmessage] = useState({
+    message: "",
+    style: "bg-green-500",
+  });
+  const handleShowMessage = () => {
+    setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false); // Hide the message after 5 seconds
+    }, 2000);
+  };
+  //handle input change
+  const handleChange = (e) => {
+    setform({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  //handle from submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (form.password !== form.confirmPassword) {
+        setPopUpmessage({
+          message: "confirm password not matched.",
+          style: "bg-red-500",
+        });
+        handleShowMessage();
+        return "";
+      }
+      console.log(form);
+      const response = await axios
+        .post(process.env.VITE_API_REGISTER_API, form, {
+          headers: { "Content-Type": "application/json" },
+        })
+        .then((response) => {
+          setform({
+            firstName: "",
+            lastName: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          });
+          console.log(response);
+          setPopUpmessage({
+            message: "Registered Succefully",
+            style: "bg-green-500",
+          });
+          handleShowMessage();
+          setTimeout(() => {
+            navigate("/login");
+          }, 3000);
+        })
+        .catch((error) => {
+          const response = {
+            message: error.response.data.message,
+            error: error.response.data.Error,
+          };
+          console.log(response);
+
+          setPopUpmessage({
+            message: response.error,
+            style: "bg-red-500",
+          });
+          handleShowMessage();
+        });
+    } catch (error) {
+      console.log("error while connecting to registering api.");
+    }
+  };
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -28,13 +108,33 @@ function RegisterPage() {
               </svg>
             </div>
           </div>
+          {/* PopUp meassage UI */}
+          <div className="">
+            {/* <button
+              onClick={handleShowMessage}
+              className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
+            >
+              Show Message
+            </button> */}
+
+            {showMessage && (
+              <div
+                className={`fixed top-4 right-4  ${PopUpmessage.style} text-white p-4 rounded shadow-lg w-64`}
+              >
+                <p>{PopUpmessage.message}</p>
+                {/* Decreasing Line with Animation */}
+              </div>
+            )}
+          </div>
+          {/* PopUp meassage UI */}
+
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
             Create new Account
           </h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleSubmit} method="POST" className="space-y-6">
             <div>
               <label
                 htmlFor="email"
@@ -48,6 +148,8 @@ function RegisterPage() {
                     id="firstName"
                     name="firstName"
                     type="text"
+                    value={form.firstName}
+                    onChange={handleChange}
                     required
                     autoComplete="name"
                     placeholder="First Name"
@@ -56,10 +158,12 @@ function RegisterPage() {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="firstName"
-                    name="firstName"
+                    id="lastName"
+                    name="lastName"
                     type="text"
                     placeholder="Last Name"
+                    value={form.lastName}
+                    onChange={handleChange}
                     required
                     autoComplete="name"
                     className="block w-full rounded-md bg-blue-50 px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -79,6 +183,8 @@ function RegisterPage() {
                   id="email"
                   name="email"
                   type="email"
+                  value={form.email}
+                  onChange={handleChange}
                   required
                   autoComplete="email"
                   className="block w-full rounded-md bg-blue-50 px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -100,6 +206,8 @@ function RegisterPage() {
                   id="password"
                   name="password"
                   type="password"
+                  value={form.password}
+                  onChange={handleChange}
                   required
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-blue-50 px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -110,7 +218,7 @@ function RegisterPage() {
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  htmlFor="password"
+                  htmlFor="confirmPassword"
                   className="block text-sm/6 font-medium text-gray-900"
                 >
                   Conferm Password
@@ -118,9 +226,11 @@ function RegisterPage() {
               </div>
               <div className="mt-2">
                 <input
-                  id="password"
-                  name="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
                   type="password"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
                   required
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-blue-100 px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"

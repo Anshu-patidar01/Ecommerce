@@ -8,7 +8,8 @@ const ProtectedRoute = ({ children, role }) => {
 
   useEffect(() => {
     const validateToken = async () => {
-      // const token = Cookies.get("auth_token");
+      const token = Cookies.get("token");
+      console.log(token);
       // if (!token) {
       //   setIsAuthorized(false);
       //   return;

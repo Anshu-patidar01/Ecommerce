@@ -1,8 +1,75 @@
-import { H1Icon } from "@heroicons/react/24/outline";
+import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
+  const [form, setform] = useState({
+    email: "",
+    password: "",
+  });
+  const navigate = useNavigate();
+
+  const [showMessage, setShowMessage] = useState(false);
+  const [PopUpmessage, setPopUpmessage] = useState({
+    message: "",
+    style: "bg-green-500",
+  });
+  const handleShowMessage = () => {
+    setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false); // Hide the message after 5 seconds
+    }, 2000);
+  };
+  //handle input change
+  const handleChange = (e) => {
+    setform({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  //handle from submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      console.log(form);
+      const response = await axios
+        .post(process.env.VITE_API_LOGINI_API, form, {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        })
+        .then((response) => {
+          setform({
+            email: "",
+            password: "",
+          });
+          console.log(response);
+          setPopUpmessage({
+            message: "login Succefully",
+            style: "bg-green-500",
+          });
+          handleShowMessage();
+          setTimeout(() => {
+            navigate("/home");
+          }, 2000);
+        })
+        .catch((error) => {
+          const response = {
+            message: error.response.data.message,
+            error: error.response.data.Error,
+          };
+          console.log(response);
+
+          setPopUpmessage({
+            message: response.error,
+            style: "bg-red-500",
+          });
+          handleShowMessage();
+        });
+    } catch (error) {
+      console.log("error while connecting to login api.", error);
+    }
+  };
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -28,13 +95,38 @@ export default function LoginPage() {
               </svg>
             </div>
           </div>
+          {/* PopUp meassage UI */}
+          <div className="">
+            {/* <button
+              onClick={handleShowMessage}
+              className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
+            >
+              Show Message
+            </button> */}
+
+            {showMessage && (
+              <div
+                className={`fixed top-4 right-4  ${PopUpmessage.style} text-white p-4 rounded shadow-lg w-64`}
+              >
+                <p>{PopUpmessage.message}</p>
+                {/* Decreasing Line with Animation */}
+              </div>
+            )}
+          </div>
+          {/* PopUp meassage UI */}
+
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
             Sign in to your account
           </h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form
+            action="#"
+            onSubmit={handleSubmit}
+            method="POST"
+            className="space-y-6"
+          >
             <div>
               <label
                 htmlFor="email"
@@ -47,6 +139,8 @@ export default function LoginPage() {
                   id="email"
                   name="email"
                   type="email"
+                  value={form.email}
+                  onChange={handleChange}
                   required
                   autoComplete="email"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
@@ -76,6 +170,8 @@ export default function LoginPage() {
                   id="password"
                   name="password"
                   type="password"
+                  value={form.password}
+                  onChange={handleChange}
                   required
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
