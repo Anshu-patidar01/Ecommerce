@@ -28,11 +28,25 @@ export default function LoginPage() {
     });
   };
 
+  // const handleCheckOnline = async () => {
+  //   try {
+  //     const response = await axios.get("https://google.com");
+  //   } catch (error) {
+  //     setPopUpmessage({
+  //       message: "No internet connection.",
+  //       style: "bg-red-500",
+  //     });
+  //     handleShowMessage();
+  //     return "";
+  //   }
+  // };
   //handle from submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // handleCheckOnline();
     try {
       console.log(form);
+
       const response = await axios
         .post(process.env.VITE_API_LOGINI_API, form, {
           headers: { "Content-Type": "application/json" },
@@ -43,7 +57,9 @@ export default function LoginPage() {
             email: "",
             password: "",
           });
-          console.log(response);
+          console.log(response.data);
+          const token = response.data.token;
+          localStorage.setItem("ecommerceToken", token);
           setPopUpmessage({
             message: "login Succefully",
             style: "bg-green-500",
@@ -58,16 +74,20 @@ export default function LoginPage() {
             message: error.response.data.message,
             error: error.response.data.Error,
           };
-          console.log(response);
-
           setPopUpmessage({
-            message: response.error,
+            message: " email or password was wrong",
             style: "bg-red-500",
           });
           handleShowMessage();
+          console.log(response);
         });
     } catch (error) {
       console.log("error while connecting to login api.", error);
+      setPopUpmessage({
+        message: "error while connecting to login api.",
+        style: "bg-red-500",
+      });
+      handleShowMessage();
     }
   };
   return (
@@ -97,18 +117,12 @@ export default function LoginPage() {
           </div>
           {/* PopUp meassage UI */}
           <div className="">
-            {/* <button
-              onClick={handleShowMessage}
-              className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600"
-            >
-              Show Message
-            </button> */}
-
             {showMessage && (
               <div
                 className={`fixed top-4 right-4  ${PopUpmessage.style} text-white p-4 rounded shadow-lg w-64`}
               >
                 <p>{PopUpmessage.message}</p>
+                <p>{}</p>
                 {/* Decreasing Line with Animation */}
               </div>
             )}
@@ -157,10 +171,7 @@ export default function LoginPage() {
                   Password
                 </label>
                 <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  >
+                  <a className="font-semibold text-indigo-600 hover:text-indigo-500">
                     Forgot password?
                   </a>
                 </div>
@@ -182,6 +193,18 @@ export default function LoginPage() {
             <div>
               <button
                 type="submit"
+                id="signInButton"
+                onClick={() => {
+                  document.getElementById("signInButton").innerText =
+                    "loading...";
+
+                  setTimeout(
+                    () =>
+                      (document.getElementById("signInButton").innerText =
+                        "Sign in"),
+                    3000
+                  );
+                }}
                 className="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
                 Sign in

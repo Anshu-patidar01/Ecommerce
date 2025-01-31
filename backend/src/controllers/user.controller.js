@@ -2,6 +2,7 @@ import UserModel from "../models/UserModel.js";
 import createUser from "../services/user.service.js";
 import uservalidation from "./userValidation.js";
 import validator from "validator";
+import jwt from "jsonwebtoken";
 const userRegister = async (req, res) => {
   try {
     const { firstName, lastName, email, password, role } = req.body;
@@ -40,7 +41,7 @@ const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!validator.isEmail(email)) {
-      throw new Error("enter valid email.");
+      throw new Error("invalid email.");
     }
     const user = await UserModel.findOne({ "basicInfo.email": email });
     if (!user) {
@@ -57,11 +58,12 @@ const userLogin = async (req, res) => {
       SameSite: "None",
       secure: true,
     });
-    res.json({ message: "login successfull" });
+    res.json({ message: "login successfull", token });
   } catch (error) {
-    res.status(400).json({ message: "Problem while login", Error: `${error}` });
+    res.status(400).json({ message: "Problem while login1", Error: error });
   }
 };
+
 const userProfile = async (req, res) => {
   const user = await UserModel.find({});
   res.send(user);

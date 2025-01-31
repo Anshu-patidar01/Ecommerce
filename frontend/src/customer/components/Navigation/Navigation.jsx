@@ -20,6 +20,8 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import HomePage from "../../pages/Home/HomePage";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const navigation = {
   categories: [
@@ -152,7 +154,52 @@ const navigation = {
 };
 
 export default function Navigation() {
+  const navigatelogin = useNavigate();
   const [open, setOpen] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [PopUpmessage, setPopUpmessage] = useState({
+    message: "",
+    style: "bg-green-500",
+  });
+  const handleShowMessage = () => {
+    setShowMessage(true);
+    setTimeout(() => {
+      setShowMessage(false); // Hide the message after 5 seconds
+    }, 2000);
+  };
+
+  const handleLogOut = async () => {
+    const token = localStorage.getItem("ecommerceToken");
+    if (!token) {
+      console.log("token not found.");
+      setPopUpmessage({
+        message: "Please sign-in first.",
+        style: "bg-red-500",
+      });
+      handleShowMessage();
+    } else {
+      const tokenx = localStorage.setItem("ecommerceToken", "");
+      console.log("token removed:", tokenx);
+      setPopUpmessage({
+        message: "Sign-out successfully.",
+        style: "bg-green-500",
+      });
+      handleShowMessage();
+    }
+  };
+
+  const handleLogin = async () => {
+    const token = localStorage.getItem("ecommerceToken");
+    if (!token) {
+      navigatelogin("/login");
+    } else {
+      setPopUpmessage({
+        message: "You are Aleary Signed-in.",
+        style: "bg-green-500",
+      });
+      handleShowMessage();
+    }
+  };
 
   return (
     <div className="bg-white relative z-10">
@@ -270,18 +317,12 @@ export default function Navigation() {
 
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
               <div className="flow-root">
-                <a
-                  href="#"
-                  className="-m-2 block p-2 font-medium text-gray-900"
-                >
+                <a className="-m-2 block p-2 font-medium text-gray-900">
                   Sign in
                 </a>
               </div>
               <div className="flow-root">
-                <a
-                  href="#"
-                  className="-m-2 block p-2 font-medium text-gray-900"
-                >
+                <a className="-m-2 block p-2 font-medium text-gray-900">
                   Create account
                 </a>
               </div>
@@ -291,11 +332,11 @@ export default function Navigation() {
               <a href="#" className="-m-2 flex items-center p-2">
                 <img
                   alt=""
-                  src="https://tailwindui.com/plus/img/flags/flag-canada.svg"
+                  src="https://images.mapsofworld.com/india/india-flag.gif"
                   className="block h-auto w-5 shrink-0"
                 />
                 <span className="ml-3 block text-base font-medium text-gray-900">
-                  CAD
+                  IND
                 </span>
                 <span className="sr-only">, change currency</span>
               </a>
@@ -457,33 +498,48 @@ export default function Navigation() {
               <div className="ml-auto flex items-center">
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   <a
-                    href="#"
+                    onClick={() => {
+                      handleLogin();
+                    }}
                     className="text-sm font-medium text-gray-700 hover:text-gray-800"
                   >
                     Sign in
                   </a>
-                  <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
                   <a
-                    href="#"
+                    onClick={() => {
+                      handleLogOut();
+                    }}
                     className="text-sm font-medium text-gray-700 hover:text-gray-800"
                   >
+                    Sign out
+                  </a>
+                  <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
+                  <a className="text-sm font-medium text-gray-700 hover:text-gray-800">
                     Create account
                   </a>
                 </div>
 
                 <div className="hidden lg:ml-8 lg:flex">
-                  <a
-                    href="#"
-                    className="flex items-center text-gray-700 hover:text-gray-800"
-                  >
+                  <a className="flex items-center text-gray-700 hover:text-gray-800">
                     <img
                       alt=""
-                      src="https://tailwindui.com/plus/img/flags/flag-canada.svg"
+                      src="https://images.mapsofworld.com/india/india-flag.gif"
                       className="block h-auto w-5 shrink-0"
                     />
-                    <span className="ml-3 block text-sm font-medium">CAD</span>
+                    <span className="ml-3 block text-sm font-medium">IND</span>
                     <span className="sr-only">, change currency</span>
                   </a>
+                </div>
+                <div className="">
+                  {showMessage && (
+                    <div
+                      className={`fixed top-4 right-4  ${PopUpmessage.style} text-white p-4 rounded shadow-lg w-64`}
+                    >
+                      <p>{PopUpmessage.message}</p>
+                      <p>{}</p>
+                      {/* Decreasing Line with Animation */}
+                    </div>
+                  )}
                 </div>
 
                 {/* Search */}

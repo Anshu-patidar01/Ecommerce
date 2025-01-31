@@ -67,8 +67,8 @@ function BrowseAllcompo(props) {
         }  w-full  overflow-y-scroll ml-10 grid  gap-2`}
       >
         {/* {Product.filter((item) => item.Category == "Shirts").map((item) => ( */}
-        {product.map((item) => (
-          <div key={item.ID} className="w-[12rem]">
+        {product.map((item, index) => (
+          <div key={index} className="w-[12rem]">
             <FullCard
               productImage={item.image}
               productTitle={item.title}
