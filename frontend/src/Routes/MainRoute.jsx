@@ -8,13 +8,29 @@ import CustomerRoutes from "../customer/Routes/CustomerRoutes";
 import LoginPage from "../customer/pages/AuthPage/LoginPage";
 import RegisterPage from "../customer/pages/AuthPage/RegisterPage";
 import ProtectedRoute from "./ProtectedRoute";
+import { UserProvider } from "../Context/UserContex";
 function MainRoute() {
   return (
     <Router>
       <ScrollToTop />
       <Routes>
         {/* /Custumer Routes/ */}
-        <Route path="/*" element={<CustomerRoutes />} />
+        <Route
+          path="/*"
+          element={
+            <UserProvider>
+              <CustomerRoutes />
+            </UserProvider>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <UserProvider>
+              <LoginPage />
+            </UserProvider>
+          }
+        />
         {/* //admin Routes */}
         <Route
           path="/admin/*"
@@ -27,7 +43,6 @@ function MainRoute() {
         {/* user not found route */}
         <Route path="/NoN" element={<Notfound />} />
         {/* login page */}
-        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </Router>

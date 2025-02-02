@@ -1,11 +1,11 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 
 //create a context
-export const AdminContext = createContext();
+export const UserContext = createContext();
 
 //create a provider Component
-export const AdminProvider = ({ children }) => {
-  const [Product, setProduct] = useState({
+export const UserProvider = ({ children }) => {
+  const [UserProduct, setUserProduct] = useState({
     item: {
       title: "was",
       category: "Man Kurta's",
@@ -23,9 +23,13 @@ export const AdminProvider = ({ children }) => {
       Offer: "Not Available",
     },
   });
+  const [User, setUser] = useState("");
+
   return (
-    <AdminContext.Provider value={{ Product, setProduct }}>
+    <UserContext.Provider
+      value={{ UserProduct, setUserProduct, User, setUser }}
+    >
       {children}
-    </AdminContext.Provider>
+    </UserContext.Provider>
   );
 };

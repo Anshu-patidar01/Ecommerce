@@ -1,12 +1,16 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../../../Context/UserContex";
+import { useEffect } from "react";
 
 export default function LoginPage() {
   const [form, setform] = useState({
     email: "",
     password: "",
   });
+  const { User, setUser } = useContext(UserContext);
+  // console.log(User);
   const navigate = useNavigate();
 
   const [showMessage, setShowMessage] = useState(false);
@@ -46,7 +50,6 @@ export default function LoginPage() {
     // handleCheckOnline();
     try {
       console.log(form);
-
       const response = await axios
         .post(process.env.VITE_API_LOGINI_API, form, {
           headers: { "Content-Type": "application/json" },
@@ -59,12 +62,14 @@ export default function LoginPage() {
           });
           console.log(response.data);
           const token = response.data.token;
+          setUser(response.data.user);
           localStorage.setItem("ecommerceToken", token);
           setPopUpmessage({
             message: "login Succefully",
             style: "bg-green-500",
           });
           handleShowMessage();
+
           setTimeout(() => {
             navigate("/home");
           }, 2000);

@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import {
   Dialog,
   DialogBackdrop,
@@ -22,6 +22,7 @@ import {
 import HomePage from "../../pages/Home/HomePage";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../../../Context/UserContex";
 
 const navigation = {
   categories: [
@@ -147,13 +148,14 @@ const navigation = {
     },
   ],
   pages: [
-    { name: "Browse All", href: "#" },
-    { name: "Company", href: "#" },
-    { name: "Stores", href: "#" },
+    { name: "Browse All", to: "BrowseAll" },
+    { name: "Company", to: "BrowseAll" },
+    { name: "Stores", to: "BrowseAll" },
   ],
 };
 
 export default function Navigation() {
+  const { User, setUser } = useContext(UserContext);
   const navigatelogin = useNavigate();
   const [open, setOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
@@ -180,6 +182,7 @@ export default function Navigation() {
     } else {
       const tokenx = localStorage.setItem("ecommerceToken", "");
       console.log("token removed:", tokenx);
+      setUser("");
       setPopUpmessage({
         message: "Sign-out successfully.",
         style: "bg-green-500",
@@ -255,10 +258,7 @@ export default function Navigation() {
                             src={item.imageSrc}
                             className="aspect-square w-full rounded-lg bg-gray-100 object-cover group-hover:opacity-75 "
                           />
-                          <a
-                            href={item.href}
-                            className="mt-6 block font-medium text-gray-900"
-                          >
+                          <a className="mt-6 block font-medium text-gray-900">
                             <span
                               aria-hidden="true"
                               className="absolute inset-0 z-10"
@@ -286,10 +286,7 @@ export default function Navigation() {
                         >
                           {section.items.map((item) => (
                             <li key={item.name} className="flow-root">
-                              <a
-                                href={item.href}
-                                className="-m-2 block p-2 text-gray-500"
-                              >
+                              <a className="-m-2 block p-2 text-gray-500">
                                 {item.name}
                               </a>
                             </li>
@@ -305,12 +302,12 @@ export default function Navigation() {
             <div className="space-y-6 border-t border-gray-200 px-4 py-6">
               {navigation.pages.map((page) => (
                 <div key={page.name} className="flow-root">
-                  <a
-                    href={page.href}
+                  <Link
+                    to={`/${page.to}`}
                     className="-m-2 block p-2 font-medium text-gray-900"
                   >
                     {page.name}
-                  </a>
+                  </Link>
                 </div>
               ))}
             </div>
@@ -329,7 +326,7 @@ export default function Navigation() {
             </div>
 
             <div className="border-t border-gray-200 px-4 py-6">
-              <a href="#" className="-m-2 flex items-center p-2">
+              <a className="-m-2 flex items-center p-2">
                 <img
                   alt=""
                   src="https://images.mapsofworld.com/india/india-flag.gif"
@@ -368,7 +365,7 @@ export default function Navigation() {
 
               {/* Logo */}
               <div className="ml-4 flex lg:ml-0">
-                <a href="#">
+                <Link to={"/home"}>
                   <span className="sr-only">Your Company</span>
                   <div className=" flex flex-row gap-2 items-center bg-black rounded-xl p-2  ">
                     <h1 className=" font-light text-lg text-white cursor-pointer transition-transform duration-500 ease-in-out transform hover:scale-100">
@@ -391,7 +388,7 @@ export default function Navigation() {
                       </svg>
                     </div>
                   </div>
-                </a>
+                </Link>
               </div>
 
               {/* Flyout menus */}
@@ -429,10 +426,7 @@ export default function Navigation() {
                                       src={item.imageSrc}
                                       className="aspect-square w-full rounded-lg bg-gray-100 object-cover group-hover:opacity-75"
                                     />
-                                    <a
-                                      href={item.href}
-                                      className="mt-6 block font-medium "
-                                    >
+                                    <a className="mt-6 block font-medium ">
                                       <span
                                         aria-hidden="true"
                                         className="absolute inset-0 z-10"
@@ -464,10 +458,7 @@ export default function Navigation() {
                                           key={item.name}
                                           className="flex h-5 "
                                         >
-                                          <a
-                                            href={item.href}
-                                            className="hover:text-lg"
-                                          >
+                                          <a className="hover:text-lg">
                                             {item.name}
                                           </a>
                                         </li>
@@ -484,13 +475,13 @@ export default function Navigation() {
                   ))}
 
                   {navigation.pages.map((page) => (
-                    <a
+                    <Link
                       key={page.name}
-                      href={page.href}
+                      to={`/${page.to}`}
                       className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
                     >
                       {page.name}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </PopoverGroup>
@@ -530,6 +521,7 @@ export default function Navigation() {
                     <span className="sr-only">, change currency</span>
                   </a>
                 </div>
+                {/* popUp message */}
                 <div className="">
                   {showMessage && (
                     <div
@@ -544,7 +536,7 @@ export default function Navigation() {
 
                 {/* Search */}
                 <div className="flex lg:ml-6">
-                  <a href="#" className="p-2 text-gray-400 hover:text-gray-500">
+                  <a className="p-2 text-gray-400 hover:text-gray-500">
                     <span className="sr-only">Search</span>
                     <MagnifyingGlassIcon
                       aria-hidden="true"
@@ -555,16 +547,60 @@ export default function Navigation() {
 
                 {/* Cart */}
                 <div className="ml-4 flow-root lg:ml-6">
-                  <a href="#" className="group -m-2 flex items-center p-2">
+                  <a
+                    onClick={() => {
+                      navigatelogin("/bag");
+                    }}
+                    className="group -m-2 flex items-center p-2"
+                  >
                     <ShoppingBagIcon
                       aria-hidden="true"
                       className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"
                     />
                     <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                      0
+                      <h1>{User !== "" ? User.cart.length : "0"}</h1>
                     </span>
                     <span className="sr-only">items in cart, view bag</span>
                   </a>
+                </div>
+                {/* wishlist */}
+                <div className="px-2 flex flex-row items-center justify-center gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                    />
+                  </svg>
+                  {User !== "" ? User.wishlistItems.length : "0"}
+                </div>
+                {/* wishlist */}
+                {/* user logo */}
+                <div className="ml-2 flex flex-row gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                    />
+                  </svg>
+                  <div>
+                    {User !== "" ? User.basicInfo.fullName.firstName : "User"}
+                  </div>
                 </div>
               </div>
             </div>

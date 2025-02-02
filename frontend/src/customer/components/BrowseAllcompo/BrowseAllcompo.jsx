@@ -23,11 +23,13 @@ function BrowseAllcompo(props) {
   useEffect(() => {
     getProductData();
   }, []);
+  // console.log(product);
   return (
     <div className="flex flex-row w-full h-full">
       <div
         className={`w-3/12 ${
-          IsVisible && props.filterSection ? "w-3/12" : "w-1"
+          // IsVisible && props.filterSection ? "w-3/12" : "w-1"
+          IsVisible ? "w-3/12 block" : "w-1 hidden"
         } `}
       >
         <div className=" flex flex-row w-full justify-end text-lg items-start h-5">
@@ -40,7 +42,8 @@ function BrowseAllcompo(props) {
         </div>
         <div
           className={` ${
-            IsVisible && props.filterSection ? "block" : "hidden"
+            // IsVisible && props.filterSection ? "block" : "hidden"
+            IsVisible ? "block" : "hidden"
           } overflow-y-scroll w-full h-full`}
         >
           {/* //Filter selection */}
@@ -63,7 +66,7 @@ function BrowseAllcompo(props) {
 
       <div
         className={` ${
-          IsVisible && props.filterSection ? "grid-cols-4" : "grid-cols-5"
+          IsVisible && props.filterSection ? "grid-cols-4" : "grid-cols-4"
         }  w-full  overflow-y-scroll ml-10 grid  gap-2`}
       >
         {/* {Product.filter((item) => item.Category == "Shirts").map((item) => ( */}
@@ -74,6 +77,16 @@ function BrowseAllcompo(props) {
               productTitle={item.title}
               productCategory={item.category}
               productBrand={item.Brand}
+              productPrice={item.price}
+              productOffer={item.Discount}
+              productdescription={item.description}
+              productsize={item.size}
+              productBandwidth={item.Bandwidth}
+              productColor={item.Color}
+              productPattern={item.Pattern}
+              productLength={item.Length}
+              product_id={item._id}
+              // item={item}
             />
           </div>
         ))}

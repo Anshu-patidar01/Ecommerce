@@ -4,10 +4,7 @@ const BrandCard = (props) => {
     <div className=" h-[27rem] mt-3">
       <div>
         <div className="group my-3 mx-1 flex h-[25rem] w-[15rem] max-w-xs flex-col overflow-hidden border border-gray-100 bg-white shadow-lg shadow-gray-900">
-          <a
-            className="relative mx-1 mt-1 flex h-full overflow-hidden rounded"
-            href="#"
-          >
+          <div className="relative mx-1 mt-1 flex h-full overflow-hidden rounded">
             <div>
               <div className=" absolute bottom-0 font-black mt-4 px-5 pb-5">
                 <div className="  w-full h-full  bg-gray-400 items-center text-center p-2 bg-opacity-50 rounded-xl z-10">
@@ -31,7 +28,7 @@ const BrandCard = (props) => {
                 alt="product image"
               />
             </div>
-          </a>
+          </div>
         </div>
       </div>
     </div>

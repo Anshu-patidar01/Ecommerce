@@ -2,11 +2,11 @@ import mongoose from "mongoose";
 import UserModel from "../models/UserModel.js";
 
 const addToCart = async (req, res) => {
-  const { productId, quantity } = req.params;
-  const userId = req.user.id;
-  // console.log(userId);
-  const data = { userId, productId, quantity };
+  const { productId, quantity } = req.body;
   try {
+    const userId = req.user.id;
+    // console.log(userId);
+    const data = { userId, productId, quantity };
     const isUserIdValid = mongoose.isValidObjectId(userId);
     const isProductIdValid = mongoose.isValidObjectId(productId);
     if (!isUserIdValid || !isProductIdValid) {

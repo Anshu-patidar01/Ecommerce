@@ -43,7 +43,10 @@ const userLogin = async (req, res) => {
     if (!validator.isEmail(email)) {
       throw new Error("invalid email.");
     }
-    const user = await UserModel.findOne({ "basicInfo.email": email });
+    const user = await UserModel.findOne({ "basicInfo.email": email }).populate(
+      "cart.productId",
+      "title description price image"
+    );
     if (!user) {
       throw new Error("Email or password is wrong..");
     }
@@ -58,7 +61,7 @@ const userLogin = async (req, res) => {
       SameSite: "None",
       secure: true,
     });
-    res.json({ message: "login successfull", token });
+    res.json({ message: "login successfull", token, user });
   } catch (error) {
     res.status(400).json({ message: "Problem while login1", Error: error });
   }

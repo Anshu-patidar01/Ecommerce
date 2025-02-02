@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import UserModel from "../models/UserModel.js";
 
 const addTowishlist = async (req, res) => {
-  const { productId } = req.params;
+  const { productId } = req.body;
   const userId = req.user.id;
   // console.log(userId);
   try {

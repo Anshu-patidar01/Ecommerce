@@ -27,11 +27,12 @@ router.post("/register", userRegister);
 router.post("/login", userLogin);
 
 router.get("/profiles", userAuth, userProfile);
-router.post("/cart/:productId/:quantity", userAuth, addToCart);
+router.post("/cart", userAuth, addToCart); //orginal
+// router.post("/cart", addToCart); //changed
 router.delete("/cart/:productId", userAuth, deleteToCart);
 router.get("/cart", userAuth, getAllCartProducts);
 // router.get("/cart/:userId",
-router.post("/wishlist/:productId", userAuth, addTowishlist);
+router.post("/wishlist", userAuth, addTowishlist);
 router.delete("/wishlist/:productId", userAuth, deleteToCart);
 
 router.post("/order", userAuth, createOrder);

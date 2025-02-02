@@ -7,6 +7,6 @@ import userAuth from "../../middleware/Auth.js";
 const Router = express.Router();
 
 Router.get("/BrowseAll", getAllProduct); //get all product
-Router.get("/:id", getProductByID); //get product details by id
+Router.post("/productbyid", getProductByID); //get product details by id
 
 export default Router;

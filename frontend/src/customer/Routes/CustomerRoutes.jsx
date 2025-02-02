@@ -6,6 +6,7 @@ import ProductOverview from "../pages/ProductOverView/ProductOverview";
 import Bag from "../pages/BagPages/Bag";
 import ProtectedRoute from "../../Routes/ProtectedRoute";
 import Notfound from "../components/Notfound";
+import { UserProvider } from "../../Context/UserContex";
 
 function CustomerRoutes() {
   const token = localStorage.getItem("ecommerceToken");
@@ -24,6 +25,7 @@ function CustomerRoutes() {
   }, []);
 
   return (
+    // <UserProvider>
     <Routes>
       <Route path="/home" element={<HomePage />} />
       <Route path="/*" element={<Notfound />} />
@@ -35,9 +37,10 @@ function CustomerRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route path="/Product" element={<ProductOverview />} />
+      <Route path="/product" element={<ProductOverview />} />
       <Route path="/bag" element={<Bag />} />
     </Routes>
+    // </UserProvider>
   );
 }
 

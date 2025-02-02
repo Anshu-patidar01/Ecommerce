@@ -75,12 +75,12 @@ const getAllProduct = async (req, res) => {
 
 const getProductByID = async (req, res) => {
   try {
-    const id = req.params.id;
-    const isId = mongoose.isValidObjectId(id);
+    const { productId } = req.body;
+    const isId = mongoose.isValidObjectId(productId);
     if (!isId) {
       throw new Error("Wrong  Id.");
     }
-    const product = await productModel.findById(id);
+    const product = await productModel.findById(productId);
     if (!product) {
       throw new Error("Product not found.");
     }
